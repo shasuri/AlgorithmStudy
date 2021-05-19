@@ -66,10 +66,12 @@ int vertex::tourTree(void)
         }
     }
 
-    return tourMaxRadian + valueu;
+    return tourMaxRadian + value;
 }
 
 int main(void)
 {
     return 0;
 }
+
+// 미완성!!
