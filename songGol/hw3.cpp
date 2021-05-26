@@ -8,6 +8,10 @@ string path;      // input path
 int routeCnt = 0; // number of route
 
 void travel(int depth, int col, int row, char dir)
+// depth : steps we moved
+// col : our column location
+// row : our row location
+// dir : previous move direction, first one is 'I', intializing
 {
 
     if (col == 6 && row == 0) // If we get to the destination(7,1)
