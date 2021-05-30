@@ -4,6 +4,7 @@
     "python.formatting.provider": "autopep8",
     "files.associations": {
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "string": "cpp"
     }
 }
