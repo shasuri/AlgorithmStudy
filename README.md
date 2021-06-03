@@ -10,4 +10,3 @@
 ## Todo
 
 - edit md katex
-- remove binary files
