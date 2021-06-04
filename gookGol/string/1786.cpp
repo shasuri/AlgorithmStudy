@@ -25,7 +25,8 @@ void solve()
 
     int i = 0, j = 0, temp = 0;
     // cout << T.size() - P.size() << endl;
-    while (i <= T.size() - P.size())
+
+    while (i + j < T.size())
     {
         // cout << T[i + j] << i + j << " : " << P[j] << j << endl;
         if (T[i + j] == P[j])
@@ -48,7 +49,6 @@ void solve()
             if (j > 0)
             {
                 i += j - pi[j - 1];
-
                 j = pi[j - 1];
             }
             else
