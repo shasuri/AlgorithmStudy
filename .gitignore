@@ -1,0 +1,8 @@
+# ignore binary files
+*
+!*.*
+!*/
+
+# ignore vscode settings
+.vscode/*
+**/.vscode/*
