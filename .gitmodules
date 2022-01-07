@@ -1,0 +1,4 @@
+[submodule "oneGol"]
+	path = oneGol
+	url = https://github.com/shasuri/challenge100-codingtest-study.git
+	branch = jw_submodule
