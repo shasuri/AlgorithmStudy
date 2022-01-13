@@ -1,5 +1,7 @@
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#include "solution.cpp"
+#include <iostream>
 #endif
 
 #include <stdio.h>
@@ -48,6 +50,8 @@ static bool run()
             if (userAns != ans)
             {
                 isCorrect = false;
+                printf("%d %d %d %d\n", mNumber, mStock, mQuantity, mPrice);
+                printf("ans : %d -> %d\n", userAns, ans);
             }
             break;
         case CMD_SELL:
@@ -57,6 +61,8 @@ static bool run()
             if (userAns != ans)
             {
                 isCorrect = false;
+                printf("%d %d %d %d\n", mNumber, mStock, mQuantity, mPrice);
+                printf("ans : %d -> %d\n", userAns, ans);
             }
             break;
         case CMD_CANCEL:
@@ -70,6 +76,8 @@ static bool run()
             if (userAns != ans)
             {
                 isCorrect = false;
+                printf("%d\n", mStock);
+                printf("ans : %d -> %d\n", userAns, ans);
             }
             break;
         default:
@@ -83,11 +91,13 @@ static bool run()
 
 int main()
 {
+    // setbuf(stdin, NULL);
     setbuf(stdout, NULL);
-    //freopen("sample_input.txt", "r", stdin);
+    freopen("sample_input.txt", "r", stdin);
 
     int T, MARK;
     scanf("%d %d", &T, &MARK);
+    // printf("%d %d", T, MARK);
 
     for (int tc = 1; tc <= T; tc++)
     {
