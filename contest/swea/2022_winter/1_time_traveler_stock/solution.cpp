@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <queue>
 #include <iostream>
+#define MAX_PRICE 1000000
 
 using namespace std;
 
@@ -64,16 +65,28 @@ bool cmp(pair<int, int> t, pair<int, int> u)
     return t.second < u.second;
 }
 
+struct profitSaved
+{
+    int minPrice = MAX_PRICE;
+    int maxProfit = 0;
+    int index = 0;
+};
+
 vector<Order> buyOrderVector;
 vector<Order> sellOrderVector;
-vector<vector<pair<int, int>>> dealPriceVector(6);
+vector<vector<int>> dealPriceVector(6);
+vector<profitSaved> profitContainer(6, profitSaved());
 
 void init()
 {
     buyOrderVector.clear();
     sellOrderVector.clear();
+    profitContainer.clear();
     for (int i = 0; i < 6; i++)
+    {
         dealPriceVector[i].clear();
+        profitContainer[i] = profitSaved();
+    }
 }
 
 int buy(int mNumber, int mStock, int mQuantity, int mPrice)
@@ -105,8 +118,7 @@ int buy(int mNumber, int mStock, int mQuantity, int mPrice)
         {
             dealResult = buyOrder.getQuantity() - buyQueue.top()->getQuantity();
 
-            dealPriceVector[buyOrder.getStock()].push_back(make_pair(
-                dealPriceVector[buyOrder.getStock()].size(), buyQueue.top()->getPrice()));
+            dealPriceVector[buyOrder.getStock()].push_back(buyQueue.top()->getPrice());
 
             if (dealResult > 0)
             { // 거래량이 남음
@@ -173,8 +185,7 @@ int sell(int mNumber, int mStock, int mQuantity, int mPrice)
         {
             dealResult = sellOrder.getQuantity() - sellQueue.top()->getQuantity();
 
-            dealPriceVector[sellOrder.getStock()].push_back(make_pair(
-                dealPriceVector[sellOrder.getStock()].size(), sellQueue.top()->getPrice()));
+            dealPriceVector[sellOrder.getStock()].push_back(sellQueue.top()->getPrice());
 
             if (dealResult > 0)
             { // 거래량이 남음
@@ -243,64 +254,32 @@ void cancel(int mNumber)
     }
 }
 
-int goLeft(int m, int i, int j)
-{
-    int maxProfit = dealPriceVector[m][j].second - dealPriceVector[m][i].second;
-    i--;
-    while (i >= 0 && dealPriceVector[m][i].first < dealPriceVector[m][j].first)
-    {
-        i--;
-    }
-
-    return maxProfit;
-}
-
-int goRight(int m, int i, int j)
-{
-    int maxProfit = dealPriceVector[m][j].second - dealPriceVector[m][i].second;
-    j++;
-    while (j < dealPriceVector[m].size() && dealPriceVector[m][i].first < dealPriceVector[m][j].first)
-    {
-        j++;
-    }
-
-    return maxProfit;
-}
-
 int bestProfit(int mStock)
 {
-    int i = 0;
-    int j = dealPriceVector[mStock].size() - 1;
+    int presentPrice;
+    int presentProfit;
+    int presentIndex = 0;
+    int minDealPrice = profitContainer[mStock].minPrice;
+    int maxProfit = profitContainer[mStock].maxProfit;
 
-    sort(dealPriceVector[mStock].begin(), dealPriceVector[mStock].end(), cmp);
-
-    for (auto i : dealPriceVector[mStock])
+    for (vector<int>::iterator it = dealPriceVector[mStock].begin() + profitContainer[mStock].index;
+         it != dealPriceVector[mStock].end(); it++)
     {
-        cout << i.first << " : " << i.second << endl;
+        presentPrice = *it;
+        if (presentPrice < minDealPrice)
+            minDealPrice = presentPrice;
+
+        presentProfit = presentPrice - minDealPrice;
+
+        if (presentProfit > maxProfit)
+            maxProfit = presentProfit;
+
+        presentIndex++;
     }
 
-    while (true)
-    {
-        if (dealPriceVector[mStock][i].first > dealPriceVector[mStock][j].first)
-        {
-            i++;
-            j--;
-            if (i > j)
-                return 0;
-        }
-        else
-        {
-            int l = goLeft(mStock, i, j);
-            int r = goRight(mStock, i, j);
+    profitContainer[mStock].minPrice = minDealPrice;
+    profitContainer[mStock].maxProfit = maxProfit;
+    profitContainer[mStock].index += presentIndex;
 
-            if (l > r)
-            {
-                return l;
-            }
-            else
-            {
-                return r;
-            }
-        }
-    }
+    return maxProfit;
 }
