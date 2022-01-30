@@ -1,3 +1,6 @@
+// [ETC] 시간여행자의 주식 / 난이도:? / 하루
+// 2022 삼성 dx 동계 대학생 알고리즘 특강 테스트 1번 문제
+
 #include <vector>
 #include <algorithm>
 #include <queue>
@@ -6,7 +9,7 @@
 
 using namespace std;
 
-class Order
+class Order // 매출/매도 주문 저장 클래스
 {
 public:
     Order(int, int, int, int);
@@ -65,7 +68,7 @@ bool cmp(pair<int, int> t, pair<int, int> u)
     return t.second < u.second;
 }
 
-struct profitSaved
+struct profitSaved // 이득 정보 저장 구조체
 {
     int minPrice = MAX_PRICE;
     int maxProfit = 0;
@@ -79,6 +82,7 @@ vector<profitSaved> profitContainer(6, profitSaved());
 
 void init()
 {
+    // 모든 vector clear
     buyOrderVector.clear();
     sellOrderVector.clear();
     profitContainer.clear();
@@ -96,7 +100,7 @@ int buy(int mNumber, int mStock, int mQuantity, int mPrice)
     for (vector<Order>::iterator it = sellOrderVector.begin();
          it != sellOrderVector.end();)
     {
-        if (it->getQuantity() == 0)
+        if (it->getQuantity() == 0) // 수량이 없어진 주문은 queue에 넣기전에 vector에서 삭제
         {
             // cout << "price : " << it->getPrice() << endl;
             sellOrderVector.erase(it);
@@ -104,7 +108,7 @@ int buy(int mNumber, int mStock, int mQuantity, int mPrice)
         }
         if ((it->getStock() == buyOrder.getStock()) && (it->getPrice() <= buyOrder.getPrice()))
         {
-            buyQueue.push(it);
+            buyQueue.push(it); // priority queue에 가격이 우선되도록 저장
             // cout << "stock : " << it->getStock() << " price : " << it->getPrice() << endl;
         }
         it++;
@@ -118,7 +122,7 @@ int buy(int mNumber, int mStock, int mQuantity, int mPrice)
         {
             dealResult = buyOrder.getQuantity() - buyQueue.top()->getQuantity();
 
-            dealPriceVector[buyOrder.getStock()].push_back(buyQueue.top()->getPrice());
+            dealPriceVector[buyOrder.getStock()].push_back(buyQueue.top()->getPrice()); // 거래가 된 주문의 가격을 vector에 저장
 
             if (dealResult > 0)
             { // 거래량이 남음
@@ -144,11 +148,11 @@ int buy(int mNumber, int mStock, int mQuantity, int mPrice)
         } while (!buyQueue.empty() && dealResult > 0);
 
         if (dealResult > 0)
-            buyOrderVector.push_back(buyOrder);
+            buyOrderVector.push_back(buyOrder); // queue를 다 돌아보고도 수량이 남으면 vector에 저장
     }
     else
     {
-        buyOrderVector.push_back(buyOrder);
+        buyOrderVector.push_back(buyOrder); // queue가 비어있으면 그냥 vector에 저장
     }
     // cout << "my ans : " << buyOrder.getQuantity() << endl;
     return buyOrder.getQuantity();
@@ -239,7 +243,7 @@ void cancel(int mNumber)
         }
     }
 
-    if (!eraseFindFlag)
+    if (!eraseFindFlag) // 매수 목록에서 못 찾았으면 매도 목록에서 찾기
     {
         for (vector<Order>::iterator it = sellOrderVector.begin();
              it != sellOrderVector.end(); it++)
@@ -259,8 +263,8 @@ int bestProfit(int mStock)
     int presentPrice;
     int presentProfit;
     int presentIndex = 0;
-    int minDealPrice = profitContainer[mStock].minPrice;
-    int maxProfit = profitContainer[mStock].maxProfit;
+    int minDealPrice = profitContainer[mStock].minPrice; // 이 stock에 저장한 최소가격, 무조건 index보다는 전 시점의 가격
+    int maxProfit = profitContainer[mStock].maxProfit;   // 이 stock에 저장한 최대이익
 
     for (vector<int>::iterator it = dealPriceVector[mStock].begin() + profitContainer[mStock].index;
          it != dealPriceVector[mStock].end(); it++)
@@ -279,7 +283,7 @@ int bestProfit(int mStock)
 
     profitContainer[mStock].minPrice = minDealPrice;
     profitContainer[mStock].maxProfit = maxProfit;
-    profitContainer[mStock].index += presentIndex;
+    profitContainer[mStock].index += presentIndex; // 돌아본 for의 횟수만큼 누적되도록
 
     return maxProfit;
 }
