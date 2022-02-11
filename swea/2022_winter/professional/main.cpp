@@ -3,11 +3,12 @@
 #endif
 
 #include <stdio.h>
+#include "solution.cpp"
 
-#define CMD_INIT       100
-#define CMD_INSERT     200
+#define CMD_INIT 100
+#define CMD_INSERT 200
 #define CMD_MOVECURSOR 300
-#define CMD_COUNT      400
+#define CMD_COUNT 400
 
 extern void init(int H, int W, char mStr[]);
 extern void insert(char mChar);
@@ -21,7 +22,9 @@ static bool run()
 {
 	bool correct = false;
 	int queryCnt;
+	int initQueryCnt;
 	scanf("%d", &queryCnt);
+	initQueryCnt = queryCnt;
 	int H, W;
 	char mChar;
 	static char mStr[90001];
@@ -53,6 +56,7 @@ static bool run()
 			scanf(" %c", &ans);
 			if (ret != ans)
 			{
+				printf("QC : %d\n", initQueryCnt - queryCnt);
 				correct = false;
 			}
 		}
@@ -66,6 +70,7 @@ static bool run()
 			scanf("%d", &ans);
 			if (ret != ans)
 			{
+				printf("QC : %d\n", initQueryCnt - queryCnt);
 				correct = false;
 			}
 		}
@@ -76,7 +81,7 @@ static bool run()
 int main()
 {
 	setbuf(stdout, NULL);
-	//freopen("sample_input.txt", "r", stdin);
+	freopen("sample_input.txt", "r", stdin);
 
 	int T, MARK;
 	scanf("%d %d", &T, &MARK);
