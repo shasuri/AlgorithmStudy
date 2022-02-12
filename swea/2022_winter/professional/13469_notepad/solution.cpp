@@ -6,7 +6,7 @@ struct Character
     char content;
     Character *next;
     Character *prev;
-};
+} characters[90002];
 
 struct Cursor
 {
@@ -15,28 +15,30 @@ struct Cursor
     int width = 0;
 };
 
-Character *head = new Character;
-Character *tail = new Character;
-Cursor *cursor = new Cursor;
+Character *head = &characters[0];
+Character *tail = &characters[1];
+Cursor cursor;
 
 int noteHeight;
 int noteWidth;
 
 int strSize;
+int charCount;
+/*
+void printStr(void)
+{
+    Character *ptr = head;
+    while (1)
+    {
+        cout << ptr->content;
+        if ((ptr->content) == '$')
+            break;
 
-// void printStr(void)
-// {
-//     Character *ptr = head;
-//     while (1)
-//     {
-//         // cout << ptr->content;
-//         if ((ptr->content) == '$')
-//             break;
-
-//         ptr = ptr->next;
-//     }
-//     // cout << endl;
-// }
+        ptr = ptr->next;
+    }
+    cout << endl;
+}
+*/
 
 int getIndex(int height, int width)
 {
@@ -45,6 +47,7 @@ int getIndex(int height, int width)
 
 void init(int H, int W, char mStr[])
 {
+    charCount = 2;
     *tail = {'$', nullptr, head};
     *head = {'%', tail, nullptr};
 
@@ -54,12 +57,12 @@ void init(int H, int W, char mStr[])
     Character *ptr = head;
 
     int i = 0;
-    // cout << "init : head " << head << endl;
     while (mStr[i] != '\0')
     {
 
-        Character *newChar = new Character({mStr[i++], nullptr, nullptr});
-        // cout << "init : " << i << " : " << newChar << endl;
+        Character *newChar = &characters[charCount++];
+        *newChar = {mStr[i++], nullptr, nullptr};
+
         (newChar)->prev = ptr;
         (newChar)->next = ptr->next;
         ptr->next->prev = newChar;
@@ -70,72 +73,64 @@ void init(int H, int W, char mStr[])
 
     strSize = i;
 
-    cursor->height = 0;
-    cursor->width = 0;
-    cursor->character = head;
+    cursor.height = 0;
+    cursor.width = 0;
+    cursor.character = head;
     // printStr();
 }
 
 void insert(char mChar)
 {
 
-    Character *newChar = new Character({mChar, nullptr, nullptr});
-    Character *cursorChar = cursor->character;
+    Character *newChar = &characters[charCount++];
+    *newChar = {mChar, nullptr, nullptr};
+    Character *cursorChar = cursor.character;
 
     newChar->prev = cursorChar;
     newChar->next = cursorChar->next;
     cursorChar->next->prev = newChar;
     cursorChar->next = newChar;
 
-    cursor->character = newChar;
+    cursor.character = newChar;
 
-    if ((cursor->width) >= noteWidth - 1)
+    if ((cursor.width) >= noteWidth - 1)
     {
-        (cursor->width) = 0; // -1 can change
-        (cursor->height)++;
+        (cursor.width) = 0; // -1 can change
+        (cursor.height)++;
     }
     else
-        (cursor->width)++;
+        (cursor.width)++;
 
     strSize++;
-    // cout << "after insert cursor char : " << cursor->character->content << endl;
 }
 
 char moveCursor(int mRow, int mCol)
 {
     mRow--;
     mCol--;
-    // cout << "before mc cursor char : " << cursor->character->content << endl;
-
-    // cout << (cursor->height) << " -> " << mRow << " | " << (cursor->width) << " -> " << mCol << endl;
 
     if (strSize < getIndex(mRow, mCol))
     {
-        cursor->character = tail->prev;
-        cursor->width = strSize % noteWidth;
-        cursor->height = strSize / noteWidth;
-        // cout << "mc : $" << endl;
+        cursor.character = tail->prev;
+        cursor.width = strSize % noteWidth;
+        cursor.height = strSize / noteWidth;
         return '$';
     }
 
     int moveCount =
-        noteWidth * (mRow - (cursor->height)) + (mCol - (cursor->width));
-
-    // cout << "Moves " << moveCount << endl;
+        noteWidth * (mRow - (cursor.height)) + (mCol - (cursor.width));
 
     if (moveCount > 0)
         for (int i = 0; i < moveCount; i++)
-            cursor->character = cursor->character->next;
+            cursor.character = cursor.character->next;
     else
         for (int i = 0; i < moveCount * (-1); i++)
-            cursor->character = cursor->character->prev;
+            cursor.character = cursor.character->prev;
 
-    // cout << "mc : " << cursor->character->next->content << endl;
-
-    cursor->height = mRow;
-    cursor->width = mCol;
+    cursor.height = mRow;
+    cursor.width = mCol;
     // printStr();
-    return cursor->character->next->content;
+    return cursor.character->next->content;
 }
 
 int countCharacter(char mChar)
@@ -143,7 +138,7 @@ int countCharacter(char mChar)
 
     int searchCount = 0;
 
-    Character *ptr = cursor->character->next;
+    Character *ptr = cursor.character->next;
     while (1)
     {
         if ((ptr->content) == mChar)
@@ -156,6 +151,5 @@ int countCharacter(char mChar)
     }
 
     // printStr();
-    // cout << "cc searchcount : " << searchCount << endl;
     return searchCount;
 }
