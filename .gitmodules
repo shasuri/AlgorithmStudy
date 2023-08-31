@@ -2,3 +2,6 @@
 	path = oneGol
 	url = https://github.com/shasuri/challenge100-codingtest-study.git
 	branch = jw_submodule
+[submodule "barking_dog/basic-algo-lecture"]
+	path = barking_dog/basic-algo-lecture
+	url = https://github.com/shasuri/basic-algo-lecture.git
