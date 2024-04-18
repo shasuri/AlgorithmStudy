@@ -118,7 +118,7 @@ void permPriority(short depth, queue<long long>& exp, queue<short>& opts){
     }
 }
 
-queue<long long> getCalcQue(const char opt, queue<long long>& exp){
+queue<long long> getCalcQue(const char opt, queue<long long>& exp, queue<short>& opts){
     queue<long long> queCalc;
     for (int i = 0; i < exp.size(); i++)
     {
